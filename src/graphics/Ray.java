@@ -15,12 +15,12 @@ public class Ray {
 		double aspectratio = (double) screenwidth / screenheight;
 		
 		double horizontalfov = camera.getFOV();
-		double verticalfov = 2 * Math.atan(Math.tan(Math.toRadians(horizontalfov) / 2.0) * aspectratio);
+		double verticalfov = 2.0 * Math.atan(Math.tan(Math.toRadians(horizontalfov) / 2.0) / aspectratio);
 		
 		verticalfov = Math.toDegrees(verticalfov);
 		
 		double raypan = horizontalfov * (((double) screenx / screenwidth) - 0.5);
-		double raytilt = verticalfov * (((double) screeny / screenheight) - 0.5);
+		double raytilt = -(verticalfov * (((double) screeny / screenheight) - 0.5));
 		
 		raypan = Math.toRadians(raypan);
 		raytilt = Math.toRadians(raytilt);
@@ -30,16 +30,20 @@ public class Ray {
 		double z = Math.sin(raytilt);
 		
 		this.position = camera.getCameraPos();
-		this.direction = new Vector3d(x, y, z);
+		this.direction = new Vector3d(x, y, z).rotate(-camera.getPan(), -camera.getTilt());
 	}
 	
-	public boolean runRay() {
+	public double runRay() {
 		double mindistance = 100;
 		int iterations = 0;
+		Ball closestball = null;
+		double lighting = 0;
+		
 		ArrayList<Ball> balls = scene.getBalls();
 		for (Ball ball : balls) {
 			if (ball.getDistance(position) < mindistance) {
 				mindistance = ball.getDistance(position);
+				closestball = ball;
 			}
 		}
 		
@@ -47,11 +51,30 @@ public class Ray {
 			for (Ball ball : balls) {
 				if (ball.getDistance(position) < mindistance) {
 					mindistance = ball.getDistance(position);
+					closestball = ball;
 				}
 			}
 			this.position = position.add(direction.scale(mindistance));
 			iterations++;
 		}
-		return (iterations < 1000);
+		
+		if (mindistance <= 0.01) {
+			Vector3d surfacenormal = closestball.getNormal(this.position);
+			Vector3d reflection = this.direction.subtract(surfacenormal.scale(2 * this.direction.dotProduct(surfacenormal)));
+			for (Vector3d lightsource : scene.getLights()) {
+				Vector3d normallightvector = lightsource.subtract(position);
+				normallightvector = normallightvector.scale(1.0 / normallightvector.getLength());
+				double light = normallightvector.dotProduct(reflection);
+				if (light < 0) {
+					light = 0;
+				}				
+				lighting += light;
+			}
+		}
+		if (lighting > 1) {
+			lighting = 1;
+		}
+		return lighting;
+		//return lighting / scene.getLights().size();
 	}
 }

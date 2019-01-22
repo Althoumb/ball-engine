@@ -34,26 +34,29 @@ public class Frame extends JFrame {
 	    img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 	    
 	    ArrayList<Ball> test = new ArrayList<Ball>();
-	    test.add(new Ball(new Vector3d(0, 1, 0), 0.5));
-	    test.add(new Ball(new Vector3d(1, 2, 0), 0.5));
+	    test.add(new Ball(new Vector3d(Math.random(), Math.random(), Math.random()), Math.random()));
+	    test.add(new Ball(new Vector3d(Math.random(), Math.random(), Math.random()), Math.random()));
+	    test.add(new Ball(new Vector3d(Math.random(), Math.random(), Math.random()), Math.random()));
 	    
-	    Scene scene = new Scene(test);
+	    ArrayList<Vector3d> lights = new ArrayList<Vector3d>();
+	    lights.add(new Vector3d(-10, -5, 0));
+	    lights.add(new Vector3d(10, -5, 5));
+	    lights.add(new Vector3d(0, 5, 0));
 	    
-	    this.camera = new Camera(scene, new Vector3d(0, 0, 0), 0.0, 0.0, 90.0, width, height);
+	    Scene scene = new Scene(test, lights);
+	    
+	    this.camera = new Camera(scene, new Vector3d(0, 0, 4), 0.0, -90.0, 90.0, width, height);
 	}
 	
 	public void render() {
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				Ray ray = new Ray(x, y, camera);
-				if (ray.runRay()) {
-					img.setRGB(x, y, Color.BLACK.getRGB());
-				} else {
-					img.setRGB(x, y, Color.WHITE.getRGB());
-				}
+				Color color = Color.getHSBColor(0f, 0f, (float) ray.runRay());
+				img.setRGB(x, y, color.getRGB());
 			}
+		    f.repaint();
 		}
-	    f.repaint();
 	}
 	
 	private class GPanel extends JPanel {

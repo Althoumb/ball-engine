@@ -12,4 +12,10 @@ public class Ball {
 	public double getDistance(Vector3d point) {
 		return point.getDistance(ballpos) - radius;
 	}
+	
+	public Vector3d getNormal(Vector3d position) {
+		Vector3d normalvector = position.subtract(ballpos);
+		normalvector = normalvector.scale(1.0 / normalvector.getLength());
+		return normalvector;
+	}
 }

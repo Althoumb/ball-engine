@@ -55,4 +55,17 @@ public class Vector3d {
 	public Vector3d scale(double scalefactor) {
 		return new Vector3d(x * scalefactor, y * scalefactor, z * scalefactor);
 	}
+	
+	public Vector3d rotate(double pan, double tilt) {
+		double cosy = Math.cos(Math.toRadians(tilt));
+		double siny = Math.sin(Math.toRadians(tilt));
+		double cosx = Math.cos(Math.toRadians(pan));
+		double sinx = Math.sin(Math.toRadians(pan));
+		double newx = this.x;
+		double newy = this.y * cosy + this.z * siny;
+		double newz = -this.y * siny + this.z * cosy;
+		newy = newy * cosx - newx * sinx;
+		newx = newy * sinx + newx * cosx;
+		return new Vector3d(newx, newy, newz);
+	}
 }

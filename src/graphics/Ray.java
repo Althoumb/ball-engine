@@ -1,5 +1,6 @@
 package graphics;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
 public class Ray {
@@ -33,7 +34,7 @@ public class Ray {
 		this.direction = new Vector3d(x, y, z).rotate(-camera.getPan(), -camera.getTilt());
 	}
 	
-	public double runRay() {
+	public Color runRay() {
 		double mindistance = 100;
 		int iterations = 0;
 		Ball closestball = null;
@@ -47,7 +48,7 @@ public class Ray {
 			}
 		}
 		
-		while((mindistance > 0.01)&&(iterations < 40)) {
+		while((mindistance > 0.01)&&(iterations < 1000)) {
 			for (Ball ball : balls) {
 				if (ball.getDistance(position) < mindistance) {
 					mindistance = ball.getDistance(position);
@@ -74,7 +75,10 @@ public class Ray {
 		if (lighting > 1) {
 			lighting = 1;
 		}
-		return lighting;
+		Color ballcolor = closestball.getColor();
+		float[] hsb = new float[3];
+		Color.RGBtoHSB(ballcolor.getRed(), ballcolor.getBlue(), ballcolor.getGreen(), hsb);
+		return Color.getHSBColor(hsb[0], hsb[1], (float) (hsb[2] * lighting));
 		//return lighting / scene.getLights().size();
 	}
 }

@@ -47,7 +47,7 @@ public class Ray {
 			}
 		}
 		
-		while((mindistance > 0.01)&&(iterations < 1000)) {
+		while((mindistance > 0.01)&&(iterations < 40)) {
 			for (Ball ball : balls) {
 				if (ball.getDistance(position) < mindistance) {
 					mindistance = ball.getDistance(position);

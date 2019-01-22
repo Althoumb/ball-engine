@@ -35,6 +35,9 @@ public class Ray {
 	}
 	
 	public Color runRay() {
+		double maxiterations = 1000;
+		Vector3d initialposition = position;
+		double maxdistance = 10;
 		double mindistance = 100;
 		int iterations = 0;
 		Ball closestball = null;
@@ -48,7 +51,7 @@ public class Ray {
 			}
 		}
 		
-		while((mindistance > 0.01)&&(iterations < 1000)) {
+		while((mindistance > 0.01)&&(iterations < maxiterations)&&(initialposition.getDistance(position) < maxdistance)) {
 			for (Ball ball : balls) {
 				if (ball.getDistance(position) < mindistance) {
 					mindistance = ball.getDistance(position);

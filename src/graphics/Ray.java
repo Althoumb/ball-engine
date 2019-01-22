@@ -8,7 +8,7 @@ public class Ray {
 	Vector3d direction;
 	Scene scene;
 	
-	public Ray(int screenx, int screeny, Camera camera) {		
+	public Ray(double screenx, double screeny, Camera camera) {		
 		this.scene = camera.getScene();
 		
 		int screenwidth = camera.getScreenWidth();
@@ -20,8 +20,8 @@ public class Ray {
 		
 		verticalfov = Math.toDegrees(verticalfov);
 		
-		double raypan = horizontalfov * (((double) screenx / screenwidth) - 0.5);
-		double raytilt = -(verticalfov * (((double) screeny / screenheight) - 0.5));
+		double raypan = horizontalfov * ((screenx / screenwidth) - 0.5);
+		double raytilt = -(verticalfov * ((screeny / screenheight) - 0.5));
 		
 		raypan = Math.toRadians(raypan);
 		raytilt = Math.toRadians(raytilt);

@@ -57,15 +57,22 @@ public class Vector3d {
 	}
 	
 	public Vector3d rotate(double pan, double tilt) {
-		double cosy = Math.cos(Math.toRadians(tilt));
-		double siny = Math.sin(Math.toRadians(tilt));
+		return this.tilt(tilt).pan(pan);
+	}
+	
+	private Vector3d pan(double pan) {
 		double cosx = Math.cos(Math.toRadians(pan));
 		double sinx = Math.sin(Math.toRadians(pan));
-		double newx = this.x;
-		double newy = this.y * cosy + this.z * siny;
-		double newz = -this.y * siny + this.z * cosy;
-		newy = newy * cosx - newx * sinx;
-		newx = newy * sinx + newx * cosx;
-		return new Vector3d(newx, newy, newz);
+		double newx = this.x * cosx - this.y * sinx;
+		double newy = this.y * cosx + this.x * sinx;
+		return new Vector3d(newx, newy, this.z);
+	}
+	
+	private Vector3d tilt(double tilt) {
+		double cosy = Math.cos(Math.toRadians(-tilt));
+		double siny = Math.sin(Math.toRadians(-tilt));
+		double newz = this.z * cosy + this.y * siny;
+		double newy = this.y * cosy - this.z * siny;
+		return new Vector3d(this.x, newy, newz);
 	}
 }

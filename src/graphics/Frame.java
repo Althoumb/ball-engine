@@ -25,12 +25,15 @@ public class Frame extends JFrame {
 	
 	private int msaasqrt;
 	
+	private boolean render;
+	
 	Camera camera;
 	
-	public Frame(int width, int height, int msaasqrt) {
+	public Frame(int width, int height, int msaasqrt, boolean render, Camera camera) {
 		this.width = width;
 		this.height = height;
 		this.msaasqrt = msaasqrt;
+		this.render = render;
 		
 		f.setTitle("Simple Drawing");
 	    f.setSize(width, height);
@@ -42,21 +45,15 @@ public class Frame extends JFrame {
 	    f.setVisible(true);
 	    img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 	    
-	    ArrayList<Ball> test = new ArrayList<Ball>();
-	    test.add(new Ball(new Vector3d(-1, -1, 0), 1, Color.white));
-	    test.add(new Ball(new Vector3d(1, 1, 0), 1, Color.red));
-	    test.add(new Ball(new Vector3d(1, -1, 0), 1, Color.green));
-	    test.add(new Ball(new Vector3d(-1, 1, 0), 1, Color.blue));
-	    
-	    ArrayList<Vector3d> lights = new ArrayList<Vector3d>();
-	    lights.add(new Vector3d(-1, -1, 0));
-	    lights.add(new Vector3d(1, 1, 0));
-	    lights.add(new Vector3d(1, -1, 0));
-	    lights.add(new Vector3d(-1, 1, 0));
-	    
-	    Scene scene = new Scene(test, lights);
-	    
-	    this.camera = new Camera(scene, new Vector3d(0, -5, 5), 0.0, -45.0, 45.0, width, height);
+	    this.camera = camera;
+	}
+	
+	public void setCamera(Camera camera) {
+		this.camera = camera;
+	}
+	
+	public Camera getCamera() {
+		return camera;
 	}
 	
 	public void render() {
@@ -81,14 +78,16 @@ public class Frame extends JFrame {
 			}
 		    f.repaint();
 		}
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
-		Date date = new Date();
-		File outputfile = new File("renders/".concat(dateFormat.format(date)).concat(".png"));
-		try {
-			ImageIO.write(img, "png", outputfile);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (render) {
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
+			Date date = new Date();
+			File outputfile = new File("renders/".concat(dateFormat.format(date)).concat(".png"));
+			try {
+				ImageIO.write(img, "png", outputfile);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	
